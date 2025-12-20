@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,6 +7,7 @@ public abstract class InteractableBase : MonoBehaviour
     // modify this text in the inspector to change the prompt above the player's head
     [SerializeField] private string promptText = "Press E";
 
+    public static TMP_Text promptTMP;
     private static GameObject playerPromptUI;
     private bool playerInside = false;
 
@@ -17,9 +19,18 @@ public abstract class InteractableBase : MonoBehaviour
             playerPromptUI = GameObject.FindGameObjectWithTag("InteractUI");
 
             if (playerPromptUI == null)
-                Debug.LogError("You didn't tag the InteractUI object under the player with InteractUI bozo");
-            else
-                playerPromptUI.SetActive(false);
+            {
+                Debug.LogError("You didn't give the InteractUI object under the player the InteractUI tag you bozo");
+                return;
+            }
+           
+             playerPromptUI.SetActive(false);
+
+            promptTMP = playerPromptUI.GetComponentInChildren<TMP_Text>(true);
+
+            if (promptTMP == null)
+                Debug.LogError("No TMP_Text found under InteractUI.");
+
         }
     }
 
@@ -59,9 +70,11 @@ public abstract class InteractableBase : MonoBehaviour
     {
         if (playerPromptUI == null) return;
 
+        promptTMP.text = promptText;
+
+
         playerPromptUI.SetActive(true);
 
-        // Later: set text here via a component if you want
     }
 
     // hides the prompt UI
